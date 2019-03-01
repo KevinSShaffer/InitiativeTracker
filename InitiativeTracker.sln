@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitiativeTracker", "InitiativeTracker\InitiativeTracker.csproj", "{7213292A-5D3C-4798-9865-64C1C771F877}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitiativeTracker.Tests", "InitiativeTracker.Tests\InitiativeTracker.Tests.csproj", "{D18062AB-1C06-4D6F-AF81-42ED1F2EAAE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{7213292A-5D3C-4798-9865-64C1C771F877}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7213292A-5D3C-4798-9865-64C1C771F877}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7213292A-5D3C-4798-9865-64C1C771F877}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D18062AB-1C06-4D6F-AF81-42ED1F2EAAE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D18062AB-1C06-4D6F-AF81-42ED1F2EAAE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D18062AB-1C06-4D6F-AF81-42ED1F2EAAE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D18062AB-1C06-4D6F-AF81-42ED1F2EAAE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
