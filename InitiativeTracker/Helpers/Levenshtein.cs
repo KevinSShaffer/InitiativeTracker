@@ -1,23 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-/*
-        k   i   t   t   e   n
-    0	1	2	3	4	5	6
-s	1	1	2	3	4	5	6
-i	2	2	1	2	3	4	5
-t	3	3	2	1	2	3	4
-t	4	4	3	2	1	2	3
-i	5	5	4	3	2	2	3
-n	6	6	5	4	3	3	2
-g	7	7	6	5	4	4	3
-
- */
-
-namespace InitiativeTracker
+namespace InitiativeTracker.Helpers
 {
     public static class Levenshtein
     {

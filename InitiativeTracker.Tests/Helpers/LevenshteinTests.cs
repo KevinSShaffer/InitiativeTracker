@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace InitiativeTracker.Tests
+namespace InitiativeTracker.Helpers.Tests
 {
     [TestClass]
     public class LevenshteinTests
