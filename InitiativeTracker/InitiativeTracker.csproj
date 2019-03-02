@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="Components\Component.cs" />
     <Compile Include="Components\TextBox.cs" />
-    <Compile Include="Levenshtein.cs" />
+    <Compile Include="Helpers\Levenshtein.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
