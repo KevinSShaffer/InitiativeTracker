@@ -42,6 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Canvas.cs" />
+    <Compile Include="Card.cs" />
+    <Compile Include="Console.cs" />
+    <Compile Include="ICanvas.cs" />
+    <Compile Include="ICard.cs" />
+    <Compile Include="IConsole.cs" />
     <Compile Include="Levenshtein.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InitiativeTracker
 {
@@ -31,31 +29,26 @@ namespace InitiativeTracker
             string name;
             int quantity;
 
-            Console.SetWindowSize(50, 50);
-            Console.SetBufferSize(50, 50);
-            Console.WriteLine("Enter name:");
-            Console.CursorTop = topPosition;
+            var canvas = new Canvas(new Console(), 50, 50);
 
-            var sb = new StringBuilder();
+            // USE MVC pattern
+
+            canvas.Header = "Enter name:";
 
             while (true)
             {
-                var keyInfo = Console.ReadKey();
+                var keyInfo = System.Console.ReadKey();
 
                 if (char.IsLetterOrDigit(keyInfo.KeyChar))
                 {
-                    sb.Append(keyInfo.KeyChar);
+                    canvas.CurrentLine.Append(keyInfo.KeyChar);
                 }
                 else if (keyInfo.Key == ConsoleKey.Backspace)
                 {
-                    Console.Write('\0');
-                    Console.CursorLeft = Console.CursorLeft - 1;
-
-                    if (sb.Length > 0)
-                        sb.Remove(sb.Length - 1, 1);
+                    canvas.CurrentLine.Remove(canvas.CurrentLine.Length - 1, 1);
                 }                
 
-                string bestMatch = BestMatch(names, sb.ToString());
+                string bestMatch = BestMatch(names, canvas.CurrentLine.ToString());
 
                 if (keyInfo.Key == ConsoleKey.Enter && names.Contains(bestMatch))
                 {
@@ -64,27 +57,25 @@ namespace InitiativeTracker
                 }
                 else
                 {
-                    CompleteWord(sb.ToString(), bestMatch);
+                    CompleteWord(canvas.CurrentLine.ToString(), bestMatch);
                 }
             }
 
-            Console.Clear();
-            Console.WriteLine("Quantity:");
-            Console.CursorTop = topPosition;
+            canvas.Header = "Quantity:";
 
-            while (true)
-            {
-                if (int.TryParse(Console.ReadLine(), out int result))
-                {
-                    quantity = result;
-                    break;
-                }
-            }
+            //while (true)
+            //{
+            //    if (int.TryParse(Console.ReadLine(), out int result))
+            //    {
+            //        quantity = result;
+            //        break;
+            //    }
+            //}
 
-            Console.Clear();
-            Console.WriteLine($"Rolled 15 for quantity {quantity} of {name}");
+            //Console.Clear();
+            //Console.WriteLine($"Rolled 15 for quantity {quantity} of {name}");
 
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
         static void CompleteWord(string currentLine, string bestMatch)
