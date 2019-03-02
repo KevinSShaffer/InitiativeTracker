@@ -1,4 +1,4 @@
-﻿using System;
+﻿using InitiativeTracker.Rendering;
 using System.Text;
 
 namespace InitiativeTracker.Components
@@ -8,6 +8,12 @@ namespace InitiativeTracker.Components
         private readonly StringBuilder sb = new StringBuilder();
         private readonly int x;
         private readonly int y;
+        private readonly IRenderable renderer;
+        private int Cursor
+        {
+            get => renderer.CursorPosition.X;
+            set => renderer.MoveCursor(new Point(value, y));
+        }
 
         public TextBox(int x, int y)
         {
@@ -21,22 +27,24 @@ namespace InitiativeTracker.Components
             DeletePressed += TextBox_DeletePressed;
             HomePressed += TextBox_HomePressed;
             EndPressed += TextBox_EndPressed;
+
+            renderer = RenderFactory.GetRenderer();
         }
 
         private void TextBox_EndPressed(object sender, KeyPressedEventArgs e)
         {
-            Console.CursorLeft = sb.Length;
+            Cursor = sb.Length;
         }
 
         private void TextBox_HomePressed(object sender, KeyPressedEventArgs e)
         {
-            Console.CursorLeft = 0;
+            Cursor = 0;
         }
 
         private void TextBox_DeletePressed(object sender, KeyPressedEventArgs e)
         {
-            if (sb.Length > Console.CursorLeft)
-                sb.Remove(Console.CursorLeft, 1);
+            if (sb.Length > Cursor)
+                sb.Remove(Cursor, 1);
 
             Draw();
         }
@@ -44,44 +52,38 @@ namespace InitiativeTracker.Components
         private void TextBox_BackspacePressed(object sender, KeyPressedEventArgs e)
         {
             if (sb.Length > 0)
-                sb.Remove(--Console.CursorLeft, 1);
+                sb.Remove(--Cursor, 1);
 
             Draw();
         }
 
         private void TextBox_RightArrowPressed(object sender, KeyPressedEventArgs e)
         {
-            if (Console.CursorLeft < sb.Length)
-                Console.CursorLeft++;
+            if (renderer.CursorPosition.X < sb.Length)
+                renderer.MoveCursor(new Point(renderer.CursorPosition.X + 1, y));
         }
 
         private void TextBox_LeftArrowPressed(object sender, KeyPressedEventArgs e)
         {
-            Console.CursorLeft--;
+            renderer.MoveCursor(new Point(renderer.CursorPosition.X - 1, y));
         }
 
         private void TextBox_CharacterKeyPressed(object sender, KeyPressedEventArgs e)
         {
-            sb.Insert(Console.CursorLeft, e.KeyPressed.KeyChar);
+            sb.Insert(Cursor, e.KeyPressed.KeyChar);
             Draw();
-            Console.CursorLeft++;
+            Cursor++;
         }
 
         public override void Draw()
         {
-            int pos = Console.CursorLeft;
-
-            Console.CursorVisible = false;
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, y);
-            Console.Write(sb.ToString());
-            Console.CursorLeft = pos;
-            Console.CursorVisible = true;
+            renderer.Erase(new Point(x, y), renderer.CanvasWidth, 1);
+            renderer.DrawText(new Point(x, y), sb.ToString());
         }
 
         public override void Focus()
         {
-            Console.SetCursorPosition(x, y);
+            Cursor = x;
         }
     }
 }
