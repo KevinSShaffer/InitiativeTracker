@@ -8,17 +8,21 @@ namespace InitiativeTracker.Components
         private readonly StringBuilder sb = new StringBuilder();
         private readonly int x;
         private readonly int y;
+        private readonly int width;
         private readonly IRenderable renderer;
         private int Cursor
         {
-            get => renderer.CursorPosition.X;
-            set => renderer.MoveCursor(new Point(value, y));
+            get => renderer.CursorPosition.X - x;
+            set => renderer.MoveCursor(new Point(value + x, y));
         }
 
-        public TextBox(int x, int y)
+        public string Text => sb.ToString();
+
+        public TextBox(Point point, int width)
         {
-            this.x = x;
-            this.y = y;
+            x = point.X;
+            y = point.Y;
+            this.width = width;
 
             CharacterKeyPressed += TextBox_CharacterKeyPressed;
             LeftArrowPressed += TextBox_LeftArrowPressed;
@@ -59,13 +63,14 @@ namespace InitiativeTracker.Components
 
         private void TextBox_RightArrowPressed(object sender, KeyPressedEventArgs e)
         {
-            if (renderer.CursorPosition.X < sb.Length)
-                renderer.MoveCursor(new Point(renderer.CursorPosition.X + 1, y));
+            if (Cursor < sb.Length)
+                Cursor++;
         }
 
         private void TextBox_LeftArrowPressed(object sender, KeyPressedEventArgs e)
         {
-            renderer.MoveCursor(new Point(renderer.CursorPosition.X - 1, y));
+            if (Cursor > 0)
+                Cursor--;
         }
 
         private void TextBox_CharacterKeyPressed(object sender, KeyPressedEventArgs e)
@@ -77,13 +82,13 @@ namespace InitiativeTracker.Components
 
         public override void Draw()
         {
-            renderer.Erase(new Point(x, y), renderer.CanvasWidth, 1);
+            renderer.Erase(new Point(x, y), width, 1);
             renderer.DrawText(new Point(x, y), sb.ToString());
         }
 
         public override void Focus()
         {
-            Cursor = x;
+            Cursor = 0;
         }
     }
 }

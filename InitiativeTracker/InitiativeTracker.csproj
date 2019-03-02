@@ -43,8 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\Component.cs" />
+    <Compile Include="Components\ListBox.cs" />
+    <Compile Include="Components\SearchBox.cs" />
     <Compile Include="Components\TextBox.cs" />
     <Compile Include="Helpers\Levenshtein.cs" />
+    <Compile Include="Helpers\Searcher.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\IRenderable.cs" />
