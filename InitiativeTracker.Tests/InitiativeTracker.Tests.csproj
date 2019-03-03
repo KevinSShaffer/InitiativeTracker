@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\ListBoxTests.cs" />
+    <Compile Include="Components\TextBoxTests.cs" />
     <Compile Include="Helpers\LevenshteinTests.cs" />
     <Compile Include="Mocks\MockRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -9,11 +9,13 @@ namespace InitiativeTracker.Tests.Mocks
 {
     public class MockRenderer : IRenderer
     {
+        private Point point = new Point(0, 0);
+
         public int CanvasWidth => throw new NotImplementedException();
 
         public int CanvasHeight => throw new NotImplementedException();
 
-        public Point CursorPosition => throw new NotImplementedException();
+        public Point CursorPosition => point;
 
         public ConsoleColor ForegroundColor { get; set; }
 
@@ -38,7 +40,7 @@ namespace InitiativeTracker.Tests.Mocks
 
         public void MoveCursor(Point point)
         {
-
+            this.point = point;
         }
 
         public void ResetColor()
