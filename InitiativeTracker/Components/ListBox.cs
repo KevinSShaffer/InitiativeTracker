@@ -16,7 +16,7 @@ namespace InitiativeTracker.Components
 
         public int Padding { get; set; } = 1;
         public int Limit => height - 2;
-        public string Selected => list.ElementAt(position) ?? "";
+        public string Selected => list.ElementAtOrDefault(position) ?? string.Empty;
 
         public ListBox(IRenderer renderer, Point topLeft, int width, int height, IEnumerable<string> list)
         {
@@ -32,7 +32,7 @@ namespace InitiativeTracker.Components
 
         private void ListBox_DownArrowPressed(object sender, KeyPressedEventArgs e)
         {
-            if (position < list.Count() - 1)
+            if (position < Limit - 1)
                 position++;
 
             Draw();
