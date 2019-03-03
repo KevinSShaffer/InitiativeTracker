@@ -1,9 +1,5 @@
 ﻿using InitiativeTracker.Rendering;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InitiativeTracker.Tests.Mocks
 {
@@ -24,9 +20,19 @@ namespace InitiativeTracker.Tests.Mocks
 
         }
 
+        public void DrawLine(Point start, Point end, LineWidth lineWidth)
+        {
+            throw new NotImplementedException();
+        }
+
         public void DrawRectangle(Point topLeft, int width, int height)
         {
 
+        }
+
+        public void DrawRectangle(Point topLeft, int width, int height, LineWidth lineWidth)
+        {
+            throw new NotImplementedException();
         }
 
         public void DrawText(Point start, string text)
