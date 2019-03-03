@@ -2,7 +2,7 @@
 
 namespace InitiativeTracker.Rendering
 {
-    public class ConsoleRenderer : IRenderable
+    public class ConsoleRenderer : IRenderer
     {
         private ConsoleColor currentColor;
         private Point cursorPosition;

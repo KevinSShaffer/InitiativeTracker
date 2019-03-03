@@ -6,22 +6,21 @@ namespace InitiativeTracker.Components
     public class TextBox : Component
     {
         private readonly StringBuilder sb = new StringBuilder();
-        private readonly int x;
-        private readonly int y;
+        private readonly Point topLeft;
         private readonly int width;
-        private readonly IRenderable renderer;
+        private readonly IRenderer renderer;
         private int Cursor
         {
-            get => renderer.CursorPosition.X - x;
-            set => renderer.MoveCursor(new Point(value + x, y));
+            get => renderer.CursorPosition.X - topLeft.X;
+            set => renderer.MoveCursor(new Point(value + topLeft.X, topLeft.Y));
         }
 
         public string Text => sb.ToString();
 
-        public TextBox(Point point, int width)
+        public TextBox(IRenderer renderer, Point topLeft, int width)
         {
-            x = point.X;
-            y = point.Y;
+            this.renderer = renderer;
+            this.topLeft = topLeft;
             this.width = width;
 
             CharacterKeyPressed += TextBox_CharacterKeyPressed;
@@ -31,8 +30,6 @@ namespace InitiativeTracker.Components
             DeletePressed += TextBox_DeletePressed;
             HomePressed += TextBox_HomePressed;
             EndPressed += TextBox_EndPressed;
-
-            renderer = RenderFactory.GetRenderer();
         }
 
         private void TextBox_EndPressed(object sender, KeyPressedEventArgs e)
@@ -75,15 +72,18 @@ namespace InitiativeTracker.Components
 
         private void TextBox_CharacterKeyPressed(object sender, KeyPressedEventArgs e)
         {
-            sb.Insert(Cursor, e.KeyPressed.KeyChar);
-            Draw();
-            Cursor++;
+            if (sb.Length < width)
+            {
+                sb.Insert(Cursor, e.KeyPressed.KeyChar);
+                Draw();
+                Cursor++;
+            }
         }
 
         public override void Draw()
         {
-            renderer.Erase(new Point(x, y), width, 1);
-            renderer.DrawText(new Point(x, y), sb.ToString());
+            renderer.Erase(topLeft, width, 1);
+            renderer.DrawText(topLeft, sb.ToString());
         }
 
         public override void Focus()

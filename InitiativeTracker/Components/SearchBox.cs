@@ -1,4 +1,5 @@
-﻿using InitiativeTracker.Helpers;
+﻿using InitiativeTracker.Controllers.Interfaces;
+using InitiativeTracker.Helpers;
 using InitiativeTracker.Rendering;
 using System;
 using System.Collections.Generic;
@@ -14,45 +15,39 @@ namespace InitiativeTracker.Components
         private readonly IEnumerable<string> collection;
         private TextBox textBox;
         private ListBox listBox;
-        private IRenderable renderer;
+        private IRenderer renderer;
 
-        public SearchBox(Point topLeft, int width, int height, IEnumerable<string> collection)
+        public string Selected => listBox.Selected;
+
+        public SearchBox(IRenderer renderer, Point topLeft, int width, int height, IEnumerable<string> collection)
         {
-            textBox = new TextBox(new Point(topLeft.X + 2, topLeft.Y + 1), width - 4);
-            listBox = new ListBox(new Point(topLeft.X + 1, topLeft.Y + 2), width - 2, height - 3);
-            renderer = RenderFactory.GetRenderer();
-
+            this.renderer = renderer;
             this.topLeft = topLeft;
             this.width = width;
             this.height = height;
             this.collection = collection;
 
+            textBox = new TextBox(renderer, new Point(topLeft.X + 2, topLeft.Y + 1), width - 4);
+            listBox = new ListBox(renderer, new Point(topLeft.X + 1, topLeft.Y + 2), width - 2, height - 3, ListBoxCollection());
+
             CharacterKeyPressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
-            CharacterKeyPressed += (o, e) => FillListBox();
+            CharacterKeyPressed += (o, e) => listBox.Draw();
             LeftArrowPressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
             RightArrowPressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
             BackspacePressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
-            BackspacePressed += (o, e) => FillListBox();
+            BackspacePressed += (o, e) => listBox.Draw();
             DeletePressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
-            DeletePressed += (o, e) => FillListBox();
+            DeletePressed += (o, e) => listBox.Draw();
             HomePressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
             EndPressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
             UpArrowPressed += (o, e) => listBox.KeyPressed(e.KeyPressed);
             DownArrowPressed += (o, e) => listBox.KeyPressed(e.KeyPressed);
-            EnterPressed += SearchBox_EnterPressed;
-
-            listBox.Load(collection);
         }
 
-        private void FillListBox()
+        private IEnumerable<string> ListBoxCollection()
         {
-            listBox.Load(Searcher.Search(collection, textBox.Text).Take(listBox.Limit));
-            listBox.Draw();
-        }
-
-        private void SearchBox_EnterPressed(object sender, KeyPressedEventArgs e)
-        {
-            throw new NotImplementedException();
+            foreach (string item in Searcher.Search(collection, textBox.Text).Take(listBox.Limit))
+                yield return item;
         }
 
         public override void Draw()

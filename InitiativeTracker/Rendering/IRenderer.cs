@@ -2,7 +2,7 @@
 
 namespace InitiativeTracker.Rendering
 {
-    public interface IRenderable
+    public interface IRenderer
     {
         int CanvasWidth { get; }
         int CanvasHeight { get; }

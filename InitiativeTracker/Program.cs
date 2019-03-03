@@ -9,7 +9,7 @@ namespace InitiativeTracker
     {
         static void Main(string[] args)
         {
-            var activeComponent = new SearchBox(new Point(0, 0), 30, 20, names);
+            var activeComponent = new SearchBox(RenderFactory.GetRenderer(), new Point(0, 0), 30, 20, names);
 
             activeComponent.Focus();
             activeComponent.Draw();

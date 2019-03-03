@@ -2,7 +2,7 @@
 {
     public static class RenderFactory
     {
-        public static IRenderable GetRenderer()
+        public static IRenderer GetRenderer()
         {
             return ConsoleRenderer.Instance();
         }

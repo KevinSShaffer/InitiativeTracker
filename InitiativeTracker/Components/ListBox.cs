@@ -1,30 +1,30 @@
 ﻿using InitiativeTracker.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace InitiativeTracker.Components
 {
     public class ListBox : Component
     {
-        private readonly int x;
-        private readonly int y;
+        private readonly Point topLeft;
         private readonly int width;
         private readonly int height;
-        private readonly List<string> list; 
-        private readonly IRenderable renderer;
+        private readonly IEnumerable<string> list; 
+        private readonly IRenderer renderer;
         private int position = 0;
 
         public int Padding { get; set; } = 1;
         public int Limit => height - 2;
+        public string Selected => list.ElementAt(position) ?? "";
 
-        public ListBox(Point point, int width, int height)
+        public ListBox(IRenderer renderer, Point topLeft, int width, int height, IEnumerable<string> list)
         {
-            x = point.X;
-            y = point.Y;
+            this.renderer = renderer;
+            this.topLeft = topLeft;
             this.width = width;
             this.height = height;
-            list = new List<string>();
-            renderer = RenderFactory.GetRenderer();
+            this.list = list;
 
             UpArrowPressed += ListBox_UpArrowPressed;
             DownArrowPressed += ListBox_DownArrowPressed;
@@ -32,7 +32,7 @@ namespace InitiativeTracker.Components
 
         private void ListBox_DownArrowPressed(object sender, KeyPressedEventArgs e)
         {
-            if (position < list.Count - 1)
+            if (position < list.Count() - 1)
                 position++;
 
             Draw();
@@ -48,17 +48,19 @@ namespace InitiativeTracker.Components
 
         public override void Draw()
         {
-            renderer.DrawRectangle(new Point(x, y), width, height);
-            renderer.Erase(new Point(x + 1, y + 1), width - 2, height - 2);
+            var tempList = list.ToList();
 
-            for (int i = 0; i < Math.Min(list.Count, Limit); i++)
+            renderer.DrawRectangle(topLeft, width, height);
+            renderer.Erase(new Point(topLeft.X + 1, topLeft.Y + 1), width - 2, height - 2);
+
+            for (int i = 0; i < Math.Min(tempList.Count(), Limit); i++)
             {
                 if (position == i)
                     renderer.ForegroundColor = ConsoleColor.White;
                 else
                     renderer.ForegroundColor = ConsoleColor.DarkGray;
 
-                renderer.DrawText(new Point(x + 1 + Padding, y + 1 + i), list[i]);
+                renderer.DrawText(new Point(topLeft.X + 1 + Padding, topLeft.Y + 1 + i), tempList[i]);
             }
 
             renderer.ResetColor();
@@ -67,12 +69,6 @@ namespace InitiativeTracker.Components
         public override void Focus()
         {
             position = 0;
-        }
-
-        public void Load(IEnumerable<string> list)
-        {
-            this.list.Clear();
-            this.list.AddRange(list);
         }
     }
 }
