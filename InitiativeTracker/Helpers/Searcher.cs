@@ -1,27 +1,35 @@
-﻿using System;
+﻿using InitiativeTracker.Helpers.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace InitiativeTracker.Helpers
 {
-    public static class Searcher
+    public class Guesser : IGuesser<string>
     {
-        public static IEnumerable<string> Search(IEnumerable<string> collection, string input)
+        private readonly IEnumerable<string> collection;
+
+        public Guesser(IEnumerable<string> collection)
         {
-            var startsWith = StartsWithFirstThreeCharacters(collection, input);
+            this.collection = collection;
+        }
+
+        public IEnumerable<string> BestGuesses(string input)
+        {
+            var startsWith = StartsWith(input);
 
             if (startsWith.Count() > 0)
-                return ClosestMatches(startsWith, input) ?? Enumerable.Empty<string>();
-            else
-                return ClosestMatches(collection, input);
+                startsWith = LevenshteinOrderByDescending(startsWith, input) ?? Enumerable.Empty<string>();
+
+            return startsWith.Concat(LevenshteinOrderByDescending(collection, input)).Distinct();
         }
 
-        static IEnumerable<string> StartsWithFirstThreeCharacters(IEnumerable<string> collection, string input)
+        private IEnumerable<string> StartsWith(string input)
         {
-            return collection.Where(s => s.ToLower().StartsWith(input.Substring(0, Math.Min(input.Length, 3)).ToLower()));
+            return collection.Where(s => s.ToLower().StartsWith(input.ToLower()));
         }
 
-        static IEnumerable<string> ClosestMatches(IEnumerable<string> collection, string input)
+        private IEnumerable<string> LevenshteinOrderByDescending(IEnumerable<string> collection, string input)
         {
             return collection.ToDictionary(s => s, s => Levenshtein.Score(input.ToLower(), s.ToLower()))
                 .OrderBy(kvp => kvp.Value)

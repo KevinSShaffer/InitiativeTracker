@@ -7,12 +7,6 @@ namespace InitiativeTracker.Rendering
         private ConsoleColor currentColor;
         private Point cursorPosition;
         private const char Eraser = ' ';
-        private const char ThinVerticalLine = '8';
-        private const char ThinHorizontalLine = 'o';
-        private const char TopRightCorner = '.';
-        private const char TopLeftCorner = '.';
-        private const char BottomRightCorner = '.';
-        private const char BottomLeftCorner = '.';
         private static ConsoleRenderer instance; 
 
         public int CanvasWidth => Console.BufferWidth;
@@ -39,6 +33,11 @@ namespace InitiativeTracker.Rendering
 
         public void DrawLine(Point start, Point end)
         {
+            DrawLine(start, end, LineWidth.Thin);
+        }
+
+        public void DrawLine(Point start, Point end, LineWidth lineWidth)
+        {
             Draw(() =>
             {
                 if (start.X == end.X)
@@ -46,7 +45,7 @@ namespace InitiativeTracker.Rendering
                     for (int i = Math.Min(start.Y, end.Y); i < Math.Max(start.Y, end.Y); i++)
                     {
                         Console.SetCursorPosition(start.X, i);
-                        Console.Write(ThinVerticalLine);
+                        Console.Write(Line.Set(lineWidth).Vertical);
                     }
                 }
                 else if (start.Y == end.Y)
@@ -54,7 +53,7 @@ namespace InitiativeTracker.Rendering
                     for (int i = Math.Min(start.X, end.X); i < Math.Max(start.X, end.X); i++)
                     {
                         Console.SetCursorPosition(i, start.Y);
-                        Console.Write(ThinVerticalLine);
+                        Console.Write(Line.Set(lineWidth).Horizontal);
                     }
                 }
                 else
@@ -71,6 +70,38 @@ namespace InitiativeTracker.Rendering
             {
                 Console.SetCursorPosition(start.X, start.Y);
                 Console.Write(text);
+            });
+        }
+
+        public void DrawRectangle(Point topLeft, int width, int height)
+        {
+            DrawRectangle(topLeft, width, height, LineWidth.Thin);
+        }
+
+        public void DrawRectangle(Point topLeft, int width, int height, LineWidth lineWidth)
+        {
+            Draw(() =>
+            {
+                for (int y = topLeft.Y; y < topLeft.Y + height; y++)
+                {
+                    Console.SetCursorPosition(topLeft.X, y);
+
+                    if (y == topLeft.Y || y == topLeft.Y + height - 1)
+                    {
+                        Console.Write(y == topLeft.Y ? Line.Set(lineWidth).TopLeft : Line.Set(lineWidth).BottomLeft);
+
+                        for (int x = topLeft.X + 1; x < topLeft.X + width - 1; x++)
+                            Console.Write(Line.Set(lineWidth).Horizontal);
+
+                        Console.Write(y == topLeft.Y ? Line.Set(lineWidth).TopRight : Line.Set(lineWidth).BottomRight);
+                    }
+                    else
+                    {
+                        Console.Write(Line.Set(lineWidth).Vertical);
+                        Console.SetCursorPosition(topLeft.X + width - 1, y);
+                        Console.Write(Line.Set(lineWidth).Vertical);
+                    }
+                }
             });
         }
 
@@ -113,36 +144,54 @@ namespace InitiativeTracker.Rendering
             Console.ForegroundColor = currentColor;
         }
 
-        public void DrawRectangle(Point topLeft, int width, int height)
-        {
-            Draw(() =>
-            {
-                for (int y = topLeft.Y; y < topLeft.Y + height; y++)
-                {
-                    Console.SetCursorPosition(topLeft.X, y);
-
-                    if (y == topLeft.Y || y == topLeft.Y + height - 1)
-                    {
-                        Console.Write(y == topLeft.Y ? TopLeftCorner : BottomLeftCorner);
-
-                        for (int x = topLeft.X + 1; x < topLeft.X + width - 1; x++)
-                            Console.Write(ThinHorizontalLine);
-
-                        Console.Write(y == topLeft.Y ? TopRightCorner : BottomRightCorner);
-                    }
-                    else
-                    {
-                        Console.Write(ThinVerticalLine);
-                        Console.SetCursorPosition(topLeft.X + width - 1, y);
-                        Console.Write(ThinVerticalLine);
-                    }
-                }
-            });
-        }
-
         public void ResetColor()
         {
             Console.ResetColor();
         }
+    }
+
+    public static class Line
+    {
+        public class RectangleLineSet
+        {
+            public char Vertical { get; private set; }
+            public char Horizontal { get; private set; }
+            public char TopLeft { get; private set; }
+            public char TopRight { get; private set; }
+            public char BottomRight { get; private set; }
+            public char BottomLeft { get; private set; }
+
+            public RectangleLineSet(char vertical, char horizontal, char topRight, char topLeft, char bottomRight, char bottomLeft)
+            {
+                Vertical = vertical;
+                Horizontal = horizontal;
+                TopLeft = topLeft;
+                TopRight = topRight;
+                BottomRight = bottomRight;
+                BottomLeft = bottomLeft;
+            }
+        }
+
+        public static RectangleLineSet Thick => new RectangleLineSet('║', '═', '╗', '╔', '╝', '╚');
+        public static RectangleLineSet Thin => new RectangleLineSet('│', '─', '┐', '┌', '┘', '└');
+
+        public static RectangleLineSet Set(LineWidth lineWidth)
+        {
+            switch(lineWidth)
+            {
+                case LineWidth.Thin:
+                    return Thin;
+                case LineWidth.Thick:
+                    return Thick;
+                default:
+                    throw new ArgumentException();
+            }
+        }
+    }
+
+    public enum LineWidth
+    {
+        Thick,
+        Thin
     }
 }

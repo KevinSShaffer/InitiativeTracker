@@ -1,7 +1,5 @@
-﻿using InitiativeTracker.Controllers.Interfaces;
-using InitiativeTracker.Helpers;
+﻿using InitiativeTracker.Helpers.Interfaces;
 using InitiativeTracker.Rendering;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,20 +10,20 @@ namespace InitiativeTracker.Components
         private readonly Point topLeft;
         private readonly int width;
         private readonly int height;
-        private readonly IEnumerable<string> collection;
         private TextBox textBox;
         private ListBox listBox;
         private IRenderer renderer;
+        private readonly IGuesser<string> guesser;
 
         public string Selected => listBox.Selected;
 
-        public SearchBox(IRenderer renderer, Point topLeft, int width, int height, IEnumerable<string> collection)
+        public SearchBox(IRenderer renderer, IGuesser<string> guesser, Point topLeft, int width, int height)
         {
             this.renderer = renderer;
+            this.guesser = guesser;
             this.topLeft = topLeft;
             this.width = width;
             this.height = height;
-            this.collection = collection;
 
             textBox = new TextBox(renderer, new Point(topLeft.X + 2, topLeft.Y + 1), width - 4);
             listBox = new ListBox(renderer, new Point(topLeft.X + 1, topLeft.Y + 2), width - 2, height - 3, ListBoxCollection());
@@ -46,13 +44,13 @@ namespace InitiativeTracker.Components
 
         private IEnumerable<string> ListBoxCollection()
         {
-            foreach (string item in Searcher.Search(collection, textBox.Text).Take(listBox.Limit))
+            foreach (string item in guesser.BestGuesses(textBox.Text).Take(listBox.Limit))
                 yield return item;
         }
 
         public override void Draw()
         {
-            renderer.DrawRectangle(topLeft, width, height);
+            renderer.DrawRectangle(topLeft, width, height, LineWidth.Thick);
             textBox.Draw();
             listBox.Draw();
         }

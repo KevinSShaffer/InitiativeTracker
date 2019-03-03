@@ -48,6 +48,7 @@
     <Compile Include="Components\TextBox.cs" />
     <Compile Include="Controllers\Interfaces\IController.cs" />
     <Compile Include="Controllers\MonsterController.cs" />
+    <Compile Include="Helpers\Interfaces\IGuesser.cs" />
     <Compile Include="Helpers\Levenshtein.cs" />
     <Compile Include="Helpers\Searcher.cs" />
     <Compile Include="Models\Monster.cs" />
