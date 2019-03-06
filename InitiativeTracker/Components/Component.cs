@@ -63,7 +63,10 @@ namespace InitiativeTracker.Components
                     OnDeletePressed(new KeyPressedEventArgs(keyInfo));
                     break;
                 case ConsoleKey.Tab:
-                    OnTabPressed(new KeyPressedEventArgs(keyInfo));
+                    if (keyInfo.Modifiers.HasFlag(ConsoleModifiers.Shift))
+                        OnShiftTabPressed(new KeyPressedEventArgs(keyInfo));
+                    else
+                        OnTabPressed(new KeyPressedEventArgs(keyInfo));
                     break;
                 case ConsoleKey.Home:
                     OnHomePressed(new KeyPressedEventArgs(keyInfo));

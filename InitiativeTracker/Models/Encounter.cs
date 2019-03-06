@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace InitiativeTracker.Models
 {
-    public class Monster
+    public class Encounter
     {
-        public string Name { get; }
-
-        public Monster(string name)
-        {
-            Name = name;
-        }
+        public readonly List<MonsterGroup> MonsterGroups = new List<MonsterGroup>();
     }
 }

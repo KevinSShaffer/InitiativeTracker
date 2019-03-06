@@ -29,23 +29,26 @@ namespace InitiativeTracker.Components
             listBox = new ListBox(renderer, new Point(topLeft.X + 1, topLeft.Y + 2), width - 2, height - 3, ListBoxCollection());
 
             CharacterKeyPressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
-            CharacterKeyPressed += (o, e) => listBox.Draw();
             LeftArrowPressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
             RightArrowPressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
             BackspacePressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
-            BackspacePressed += (o, e) => listBox.Draw();
             DeletePressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
-            DeletePressed += (o, e) => listBox.Draw();
             HomePressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
             EndPressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
             UpArrowPressed += (o, e) => listBox.KeyPressed(e.KeyPressed);
             DownArrowPressed += (o, e) => listBox.KeyPressed(e.KeyPressed);
+            EnterPressed += (o, e) => textBox.Text = listBox.Selected;
         }
 
         private IEnumerable<string> ListBoxCollection()
         {
             foreach (string item in guesser.BestGuesses(textBox.Text).Take(listBox.Limit))
                 yield return item;
+        }
+
+        public void Clear()
+        {
+            textBox.Clear();
         }
 
         public override void Draw()

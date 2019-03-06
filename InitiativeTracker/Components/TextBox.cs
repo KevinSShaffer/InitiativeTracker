@@ -15,7 +15,19 @@ namespace InitiativeTracker.Components
             set => renderer.MoveCursor(new Point(value + topLeft.X, topLeft.Y));
         }
 
-        public string Text => sb.ToString();
+        public string Text
+        {
+            get
+            {
+                return sb.ToString();
+            }
+            set
+            {
+                sb.Clear();
+                sb.Append(value);
+                Cursor = sb.Length;
+            }
+        }
 
         public TextBox(IRenderer renderer, Point topLeft, int width)
         {
@@ -46,16 +58,12 @@ namespace InitiativeTracker.Components
         {
             if (sb.Length > Cursor)
                 sb.Remove(Cursor, 1);
-
-            Draw();
         }
 
         private void TextBox_BackspacePressed(object sender, KeyPressedEventArgs e)
         {
             if (sb.Length > 0)
                 sb.Remove(--Cursor, 1);
-
-            Draw();
         }
 
         private void TextBox_RightArrowPressed(object sender, KeyPressedEventArgs e)
@@ -75,9 +83,13 @@ namespace InitiativeTracker.Components
             if (sb.Length < width)
             {
                 sb.Insert(Cursor, e.KeyPressed.KeyChar);
-                Draw();
                 Cursor++;
             }
+        }
+
+        public void Clear()
+        {
+            sb.Clear();
         }
 
         public override void Draw()
@@ -88,7 +100,7 @@ namespace InitiativeTracker.Components
 
         public override void Focus()
         {
-            Cursor = 0;
+            Cursor = sb.Length;
         }
     }
 }

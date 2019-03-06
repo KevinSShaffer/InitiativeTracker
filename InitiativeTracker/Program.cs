@@ -1,6 +1,6 @@
-﻿using InitiativeTracker.Components;
-using InitiativeTracker.Helpers;
+﻿using InitiativeTracker.Helpers;
 using InitiativeTracker.Rendering;
+using InitiativeTracker.Views;
 using System;
 using System.Collections.Generic;
 
@@ -10,15 +10,15 @@ namespace InitiativeTracker
     {
         static void Main(string[] args)
         {
-            var guesser = new Guesser(names);
-            var activeComponent = new SearchBox(RenderFactory.GetRenderer(), guesser, new Point(0, 0), 30, 20);
+            var activeView = new CreateEncounter(RenderFactory.GetRenderer(), new Guesser(names));
 
-            activeComponent.Focus();
-            activeComponent.Draw();
+            activeView.Focus();
+            activeView.Draw();
 
             while (true)
             {
-                activeComponent.KeyPressed(Console.ReadKey(true));
+                activeView.KeyPressed(Console.ReadKey(true));
+                activeView.Draw();
             }
         }
 

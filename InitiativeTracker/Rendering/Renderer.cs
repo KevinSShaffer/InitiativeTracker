@@ -148,6 +148,12 @@ namespace InitiativeTracker.Rendering
         {
             Console.ResetColor();
         }
+
+        public void SetWindowSize(int width, int height)
+        {
+            Console.SetWindowSize(width, height);
+            Console.SetBufferSize(width, height);
+        }
     }
 
     public static class Line

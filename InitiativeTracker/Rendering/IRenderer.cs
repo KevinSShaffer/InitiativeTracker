@@ -17,5 +17,6 @@ namespace InitiativeTracker.Rendering
         void Erase(Point topLeft, int width, int height);
         void MoveCursor(Point point);
         void ResetColor();
+        void SetWindowSize(int width, int height);
     }
 }

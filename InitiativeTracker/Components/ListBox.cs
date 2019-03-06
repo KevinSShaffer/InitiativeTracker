@@ -34,16 +34,12 @@ namespace InitiativeTracker.Components
         {
             if (position < Limit - 1)
                 position++;
-
-            Draw();
         }
 
         private void ListBox_UpArrowPressed(object sender, KeyPressedEventArgs e)
         {
             if (position > 0)
                 position--;
-
-            Draw();
         }
 
         public override void Draw()

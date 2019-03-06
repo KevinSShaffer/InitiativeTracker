@@ -51,19 +51,20 @@
     <Compile Include="Helpers\Interfaces\IGuesser.cs" />
     <Compile Include="Helpers\Levenshtein.cs" />
     <Compile Include="Helpers\Searcher.cs" />
+    <Compile Include="Models\Encounter.cs" />
     <Compile Include="Models\Monster.cs" />
+    <Compile Include="Models\MonsterGroup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Rendering\Point.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\RenderFactory.cs" />
+    <Compile Include="Views\CreateEncounter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
