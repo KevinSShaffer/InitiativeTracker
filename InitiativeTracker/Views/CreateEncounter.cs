@@ -25,7 +25,7 @@ namespace InitiativeTracker.Views
         {
             this.renderer = renderer;
             searchBox =  new SearchBox(renderer, guesser, new Point(2, 1), 30, 19);
-            textBox = new TextBox(renderer, new Point(quantityLabel.Length + 2, 21), 2);
+            textBox = new TextBox(renderer, new Point(quantityLabel.Length + 3, 21), 2);
             listBox = new ListBox(renderer, new Point(2, 23), 30, 8, monsterNames);
 
             components.Add(searchBox);
@@ -49,6 +49,12 @@ namespace InitiativeTracker.Views
             renderer.SetWindowSize(32, 32);
         }
 
+        private string listBoxLine(MonsterGroup monsterGroup)
+        {
+            string name = monsterGroup.Monster.Name, quantity = monsterGroup.Quantity.ToString();
+            return $"{name.PadRight(26 - quantity.Length, ' ')}{quantity}";
+        }
+
         private void CreateEncounter_EnterPressed(object sender, KeyPressedEventArgs e)
         {
             if (activeComponent == searchBox)
@@ -62,12 +68,6 @@ namespace InitiativeTracker.Views
                 previousActiveComponent();
             }
             // else if done button pressed
-        }
-
-        private string listBoxLine(MonsterGroup monsterGroup)
-        {
-            string name = monsterGroup.Monster.Name, quantity = monsterGroup.Quantity.ToString();
-            return $"{name.PadRight(27 - quantity.Length, ' ')}{quantity}";
         }
 
         private void tryAddMonster()

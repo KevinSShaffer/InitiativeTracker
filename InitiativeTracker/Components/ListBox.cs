@@ -16,7 +16,11 @@ namespace InitiativeTracker.Components
 
         public int Padding { get; set; } = 1;
         public int Limit => height - 2;
-        public string Selected => list.ElementAtOrDefault(position) ?? string.Empty;
+        public string Selected
+        {
+            get => list.ElementAtOrDefault(position) ?? string.Empty;
+            set => position = list.Any(s => s == value) ? list.ToList().IndexOf(value) : position;
+        }
 
         public ListBox(IRenderer renderer, Point topLeft, int width, int height, IEnumerable<string> list)
         {

@@ -15,7 +15,7 @@ namespace InitiativeTracker.Components
         private IRenderer renderer;
         private readonly IGuesser<string> guesser;
 
-        public string Selected => listBox.Selected;
+        public string Selected { get => listBox.Selected; set => listBox.Selected = value; }
 
         public SearchBox(IRenderer renderer, IGuesser<string> guesser, Point topLeft, int width, int height)
         {
@@ -37,7 +37,13 @@ namespace InitiativeTracker.Components
             EndPressed += (o, e) => textBox.KeyPressed(e.KeyPressed);
             UpArrowPressed += (o, e) => listBox.KeyPressed(e.KeyPressed);
             DownArrowPressed += (o, e) => listBox.KeyPressed(e.KeyPressed);
-            EnterPressed += (o, e) => textBox.Text = listBox.Selected;
+            EnterPressed += SearchBox_EnterPressed;
+        }
+
+        private void SearchBox_EnterPressed(object sender, KeyPressedEventArgs e)
+        {
+            textBox.Text = listBox.Selected;
+            listBox.Selected = textBox.Text;
         }
 
         private IEnumerable<string> ListBoxCollection()

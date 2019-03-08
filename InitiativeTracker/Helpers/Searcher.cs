@@ -15,17 +15,25 @@ namespace InitiativeTracker.Helpers
 
         public IEnumerable<string> BestGuesses(string input)
         {
-            var startsWith = StartsWith(input);
+            if (string.IsNullOrWhiteSpace(input))
+                return collection.OrderBy(s => s);
 
-            if (startsWith.Count() > 0)
-                startsWith = LevenshteinOrderByDescending(startsWith, input) ?? Enumerable.Empty<string>();
+            var results = StartsWith(input).Concat(Contains(input)).Distinct();
 
-            return startsWith.Concat(LevenshteinOrderByDescending(collection, input)).Distinct();
+            if (results.Count() > 0)
+                results = LevenshteinOrderByDescending(results, input) ?? Enumerable.Empty<string>();
+
+            return results.Concat(LevenshteinOrderByDescending(collection, input)).Distinct();
         }
 
         private IEnumerable<string> StartsWith(string input)
         {
             return collection.Where(s => s.ToLower().StartsWith(input.ToLower()));
+        }
+
+        private IEnumerable<string> Contains(string input)
+        {
+            return collection.Where(s => s.ToLower().Contains(input.ToLower()));
         }
 
         private IEnumerable<string> LevenshteinOrderByDescending(IEnumerable<string> collection, string input)
