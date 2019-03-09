@@ -7,7 +7,7 @@ namespace InitiativeTracker.Rendering
         int CanvasWidth { get; }
         int CanvasHeight { get; }
         Point CursorPosition { get; }
-        ConsoleColor ForegroundColor { get; set; }
+        bool CursorVisible { get; set; }
 
         void DrawRectangle(Point topLeft, int width, int height);
         void DrawRectangle(Point topLeft, int width, int height, LineWidth lineWidth);
@@ -16,7 +16,7 @@ namespace InitiativeTracker.Rendering
         void DrawText(Point start, string text);
         void Erase(Point topLeft, int width, int height);
         void MoveCursor(Point point);
-        void ResetColor();
         void SetWindowSize(int width, int height);
+        IRenderer With(ConsoleColor color);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using InitiativeTracker.Rendering;
+using System;
 using System.Text;
 
 namespace InitiativeTracker.Components
@@ -9,6 +10,10 @@ namespace InitiativeTracker.Components
         private readonly Point topLeft;
         private readonly int width;
         private readonly IRenderer renderer;
+        private bool focused;
+
+        private ConsoleColor TextColor => focused ? ConsoleColor.White : ConsoleColor.DarkGray;
+
         private int Cursor
         {
             get => renderer.CursorPosition.X - topLeft.X;
@@ -95,12 +100,20 @@ namespace InitiativeTracker.Components
         public override void Draw()
         {
             renderer.Erase(topLeft, width, 1);
-            renderer.DrawText(topLeft, sb.ToString());
+            renderer.With(TextColor).DrawText(topLeft, sb.ToString());
         }
 
         public override void Focus()
         {
+            renderer.CursorVisible = true;
             Cursor = sb.Length;
+            focused = true;
+        }
+
+        public override void Unfocus()
+        {
+            renderer.CursorVisible = false;
+            focused = false;
         }
     }
 }

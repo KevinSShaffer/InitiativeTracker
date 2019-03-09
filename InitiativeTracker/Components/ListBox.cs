@@ -13,9 +13,13 @@ namespace InitiativeTracker.Components
         private readonly IEnumerable<string> list; 
         private readonly IRenderer renderer;
         private int position = 0;
+        private int firstElementPosition = 0;
+        private bool focused = false;
 
         public int Padding { get; set; } = 1;
         public int Limit => height - 2;
+        public ConsoleColor selectedTextColor => focused ? ConsoleColor.White : ConsoleColor.Gray;
+        public ConsoleColor BoxColor => focused ? ConsoleColor.White : ConsoleColor.DarkGray;
         public string Selected
         {
             get => list.ElementAtOrDefault(position) ?? string.Empty;
@@ -36,39 +40,58 @@ namespace InitiativeTracker.Components
 
         private void ListBox_DownArrowPressed(object sender, KeyPressedEventArgs e)
         {
-            if (position < Limit - 1)
+            if (position < list.Count() - 1)
                 position++;
+
+            if (firstElementPosition + Limit <= position)
+                firstElementPosition = position - Limit + 1;
         }
 
         private void ListBox_UpArrowPressed(object sender, KeyPressedEventArgs e)
         {
             if (position > 0)
                 position--;
+
+            if (position < firstElementPosition)
+                firstElementPosition = position;
         }
 
         public override void Draw()
         {
-            var tempList = list.ToList();
+            var tempList = list.Skip(firstElementPosition).ToList();
 
-            renderer.DrawRectangle(topLeft, width, height);
+            DrawBox();
+
+            for (int i = 0; i < Math.Min(tempList.Count, Limit); i++)
+            {
+                string text = tempList[i].Substring(0, Math.Min(width - 3, tempList[i].Length));
+
+                ConsoleColor textColor = position == i + firstElementPosition ? selectedTextColor : ConsoleColor.DarkGray;
+
+                renderer.With(textColor).DrawText(new Point(topLeft.X + 1 + Padding, topLeft.Y + 1 + i), text);
+            }
+        }
+
+        private void DrawBox()
+        {
+            renderer.With(BoxColor).DrawRectangle(topLeft, width, height);
             renderer.Erase(new Point(topLeft.X + 1, topLeft.Y + 1), width - 2, height - 2);
 
-            for (int i = 0; i < Math.Min(tempList.Count(), Limit); i++)
-            {
-                if (position == i)
-                    renderer.ForegroundColor = ConsoleColor.White;
-                else
-                    renderer.ForegroundColor = ConsoleColor.DarkGray;
+            if (firstElementPosition > 0)
+                renderer.With(BoxColor).DrawText(new Point(topLeft.X + width - 1, topLeft.Y + 1), '^'.ToString());
 
-                renderer.DrawText(new Point(topLeft.X + 1 + Padding, topLeft.Y + 1 + i), tempList[i]);
-            }
-
-            renderer.ResetColor();
+            if (list.Count() - firstElementPosition > Limit)
+                renderer.With(BoxColor).DrawText(new Point(topLeft.X + width - 1, topLeft.Y + height - 2), 'v'.ToString());
         }
 
         public override void Focus()
         {
-            position = 0;
+            focused = true;
+        }
+
+        public override void Unfocus()
+        {
+            focused = false;
         }
     }
 }

@@ -84,6 +84,8 @@ namespace InitiativeTracker.Views
 
         private void nextActiveComponent()
         {
+            activeComponent.Unfocus();
+
             if (activeComponentIndex == components.Count - 1)
                 activeComponentIndex = 0;
             else
@@ -92,6 +94,8 @@ namespace InitiativeTracker.Views
 
         private void previousActiveComponent()
         {
+            activeComponent.Unfocus();
+
             if (activeComponentIndex == 0)
                 activeComponentIndex = components.Count - 1;
             else
@@ -100,17 +104,24 @@ namespace InitiativeTracker.Views
 
         public override void Draw()
         {
-            searchBox.Draw();
-            renderer.DrawText(new Point(3, 21), quantityLabel);
-            textBox.Draw();
-            listBox.Draw();
+            ConsoleColor textColor = activeComponent == textBox ? ConsoleColor.White : ConsoleColor.DarkGray;
 
             activeComponent.Focus();
+
+            searchBox.Draw();
+            renderer.With(textColor).DrawText(new Point(3, 21), quantityLabel);
+            textBox.Draw();
+            listBox.Draw();
         }
 
         public override void Focus()
         {
             activeComponent.Focus();
+        }
+
+        public override void Unfocus()
+        {
+            activeComponent.Unfocus();
         }
     }
 }

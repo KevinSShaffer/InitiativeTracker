@@ -34,6 +34,8 @@ namespace InitiativeTracker.Components
 
         public abstract void Focus();
 
+        public abstract void Unfocus();
+
         protected void HandleFunctionKeys(ConsoleKeyInfo keyInfo)
         {
             switch (keyInfo.Key)

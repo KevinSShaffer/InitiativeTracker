@@ -12,8 +12,7 @@ namespace InitiativeTracker.Tests.Mocks
         public int CanvasHeight => throw new NotImplementedException();
 
         public Point CursorPosition => point;
-
-        public ConsoleColor ForegroundColor { get; set; }
+        public bool CursorVisible { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void DrawLine(Point start, Point end)
         {
@@ -49,9 +48,14 @@ namespace InitiativeTracker.Tests.Mocks
             this.point = point;
         }
 
-        public void ResetColor()
+        public void SetWindowSize(int width, int height)
         {
+            throw new NotImplementedException();
+        }
 
+        public IRenderer With(ConsoleColor color)
+        {
+            throw new NotImplementedException();
         }
     }
 }

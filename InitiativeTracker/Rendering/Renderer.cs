@@ -4,22 +4,16 @@ namespace InitiativeTracker.Rendering
 {
     public class ConsoleRenderer : IRenderer
     {
+        private bool cursorCurrentlyVisible;
         private ConsoleColor currentColor;
         private Point cursorPosition;
         private const char Eraser = ' ';
         private static ConsoleRenderer instance; 
 
         public int CanvasWidth => Console.BufferWidth;
-
         public int CanvasHeight => Console.BufferHeight;
-
         public Point CursorPosition => new Point(Console.CursorLeft, Console.CursorTop);
-
-        public ConsoleColor ForegroundColor
-        {
-            get => Console.ForegroundColor;
-            set => Console.ForegroundColor = value;
-        }
+        public bool CursorVisible { get => Console.CursorVisible; set => Console.CursorVisible = value; }
 
         private ConsoleRenderer() { }
 
@@ -29,6 +23,14 @@ namespace InitiativeTracker.Rendering
                 instance = new ConsoleRenderer();
 
             return instance;
+        }
+
+        public IRenderer With(ConsoleColor color)
+        {
+            currentColor = Console.ForegroundColor;
+            Console.ForegroundColor = color;
+
+            return this;
         }
 
         public void DrawLine(Point start, Point end)
@@ -133,20 +135,15 @@ namespace InitiativeTracker.Rendering
         private void StartDraw()
         {
             cursorPosition = new Point(Console.CursorLeft, Console.CursorTop);
+            cursorCurrentlyVisible = Console.CursorVisible;
             Console.CursorVisible = false;
-            currentColor = Console.ForegroundColor;
         }
 
         private void EndDraw()
         {
             Console.SetCursorPosition(cursorPosition.X, cursorPosition.Y);
-            Console.CursorVisible = true;
+            Console.CursorVisible = cursorCurrentlyVisible;
             Console.ForegroundColor = currentColor;
-        }
-
-        public void ResetColor()
-        {
-            Console.ResetColor();
         }
 
         public void SetWindowSize(int width, int height)

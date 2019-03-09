@@ -1,7 +1,7 @@
 ﻿using InitiativeTracker.Helpers.Interfaces;
 using InitiativeTracker.Rendering;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace InitiativeTracker.Components
 {
@@ -14,8 +14,10 @@ namespace InitiativeTracker.Components
         private ListBox listBox;
         private IRenderer renderer;
         private readonly IGuesser<string> guesser;
+        private bool focused = false;
 
         public string Selected { get => listBox.Selected; set => listBox.Selected = value; }
+        public ConsoleColor BoxColor => focused ? ConsoleColor.White : ConsoleColor.DarkGray;
 
         public SearchBox(IRenderer renderer, IGuesser<string> guesser, Point topLeft, int width, int height)
         {
@@ -48,7 +50,7 @@ namespace InitiativeTracker.Components
 
         private IEnumerable<string> ListBoxCollection()
         {
-            foreach (string item in guesser.BestGuesses(textBox.Text).Take(listBox.Limit))
+            foreach (string item in guesser.BestGuesses(textBox.Text))
                 yield return item;
         }
 
@@ -59,14 +61,23 @@ namespace InitiativeTracker.Components
 
         public override void Draw()
         {
-            renderer.DrawRectangle(topLeft, width, height, LineWidth.Thick);
+            renderer.With(BoxColor).DrawRectangle(topLeft, width, height, LineWidth.Thick);
             textBox.Draw();
             listBox.Draw();
         }
 
         public override void Focus()
         {
+            focused = true;
             textBox.Focus();
+            listBox.Focus();
+        }
+
+        public override void Unfocus()
+        {
+            focused = false;
+            textBox.Unfocus();
+            listBox.Unfocus();
         }
     }
 }
