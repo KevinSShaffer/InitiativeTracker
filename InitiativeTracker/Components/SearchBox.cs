@@ -16,6 +16,7 @@ namespace InitiativeTracker.Components
         private readonly IGuesser<string> guesser;
         private bool focused = false;
 
+        public string Text { get => textBox.Text; set => textBox.Text = value; }
         public string Selected { get => listBox.Selected; set => listBox.Selected = value; }
         public ConsoleColor BoxColor => focused ? ConsoleColor.White : ConsoleColor.DarkGray;
 

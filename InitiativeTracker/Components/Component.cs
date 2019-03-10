@@ -18,7 +18,7 @@ namespace InitiativeTracker.Components
         public event EventHandler<KeyPressedEventArgs> HomePressed;
         public event EventHandler<KeyPressedEventArgs> EndPressed;
 
-        public void KeyPressed(ConsoleKeyInfo keyInfo)
+        public virtual void KeyPressed(ConsoleKeyInfo keyInfo)
         {
             if (keyInfo.KeyChar >= 32 && keyInfo.KeyChar <= 126)
             {

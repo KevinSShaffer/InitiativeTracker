@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Button.cs" />
     <Compile Include="Components\Component.cs" />
     <Compile Include="Components\ListBox.cs" />
     <Compile Include="Components\SearchBox.cs" />

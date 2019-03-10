@@ -11,6 +11,26 @@ namespace InitiativeTracker.Views
     public class CreateEncounter : Component
     {
         private int activeComponentIndex = 0;
+        private int ActiveComponentIndex
+        {
+            get
+            {
+                return activeComponentIndex;
+            }
+            set
+            {
+                activeComponent.Unfocus();
+
+                if (value >= components.Count)
+                    activeComponentIndex = 0;
+                else if (value < 0)
+                    activeComponentIndex = components.Count - 1;
+                else
+                    activeComponentIndex = value;
+
+                activeComponent.Focus();
+            }
+        }
         private Component activeComponent => components[activeComponentIndex];
         private IEnumerable<string> monsterNames => encounter.MonsterGroups.Select(group => listBoxLine(group));
         private readonly Encounter encounter = new Encounter();
@@ -20,33 +40,53 @@ namespace InitiativeTracker.Views
         private readonly SearchBox searchBox;
         private readonly TextBox textBox;
         private readonly ListBox listBox;
+        private readonly Button okButton;
 
         public CreateEncounter(IRenderer renderer, IGuesser<string> guesser)
         {
             this.renderer = renderer;
-            searchBox =  new SearchBox(renderer, guesser, new Point(2, 1), 30, 19);
-            textBox = new TextBox(renderer, new Point(quantityLabel.Length + 3, 21), 2);
-            listBox = new ListBox(renderer, new Point(2, 23), 30, 8, monsterNames);
+            searchBox =  new SearchBox(renderer, guesser, new Point(2, 1), 30, 16);
+            textBox = new TextBox(renderer, new Point(quantityLabel.Length + 3, 18), 2);
+            listBox = new ListBox(renderer, new Point(2, 20), 30, 8, monsterNames);
+            okButton = new Button(renderer, new Point(23, 29)) { Text = "Done" };
 
             components.Add(searchBox);
             components.Add(textBox);
             components.Add(listBox);
+            components.Add(okButton);
 
-            CharacterKeyPressed += (o, e) => activeComponent.KeyPressed(e.KeyPressed);
-            LeftArrowPressed += (o, e) => activeComponent.KeyPressed(e.KeyPressed);
-            RightArrowPressed += (o, e) => activeComponent.KeyPressed(e.KeyPressed);
-            BackspacePressed += (o, e) => activeComponent.KeyPressed(e.KeyPressed);
-            DeletePressed += (o, e) => activeComponent.KeyPressed(e.KeyPressed);
-            HomePressed += (o, e) => activeComponent.KeyPressed(e.KeyPressed);
-            EndPressed += (o, e) => activeComponent.KeyPressed(e.KeyPressed);
-            UpArrowPressed += (o, e) => activeComponent.KeyPressed(e.KeyPressed);
-            DownArrowPressed += (o, e) => activeComponent.KeyPressed(e.KeyPressed);
-            EnterPressed += (o, e) => activeComponent.KeyPressed(e.KeyPressed);
+            okButton.EnterPressed += OkButton_EnterPressed;
             EnterPressed += CreateEncounter_EnterPressed;
-            TabPressed += (o, e) => nextActiveComponent();
-            ShiftTabPressed += (o, e) => previousActiveComponent();
+            TabPressed += (o, e) => ActiveComponentIndex++;
+            ShiftTabPressed += (o, e) => ActiveComponentIndex--;
 
             renderer.SetWindowSize(32, 32);
+        }
+
+        public override void KeyPressed(ConsoleKeyInfo keyInfo)
+        {
+            activeComponent.KeyPressed(keyInfo);
+
+            base.KeyPressed(keyInfo);
+        }
+
+        private void OkButton_EnterPressed(object sender, KeyPressedEventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void CreateEncounter_EnterPressed(object sender, KeyPressedEventArgs e)
+        {
+            if (textBox == activeComponent &&
+                tryCreateMonsterGroup(searchBox.Text, textBox.Text, out MonsterGroup monsterGroup))
+            {
+                encounter.MonsterGroups.Add(monsterGroup);
+                searchBox.Clear();
+                textBox.Clear();
+                ActiveComponentIndex = 0;
+            }
+            else
+                ActiveComponentIndex++;
         }
 
         private string listBoxLine(MonsterGroup monsterGroup)
@@ -55,63 +95,28 @@ namespace InitiativeTracker.Views
             return $"{name.PadRight(26 - quantity.Length, ' ')}{quantity}";
         }
 
-        private void CreateEncounter_EnterPressed(object sender, KeyPressedEventArgs e)
+        private bool tryCreateMonsterGroup(string name, string quantity, out MonsterGroup monsterGroup)
         {
-            if (activeComponent == searchBox)
+            if (!string.IsNullOrWhiteSpace(name) &&
+                !string.IsNullOrWhiteSpace(quantity) &&
+                int.TryParse(quantity, out int i))
             {
-                tryAddMonster();
-                nextActiveComponent();
+                monsterGroup = new MonsterGroup(new Monster(name), i);
+                return true;
             }
-            else if (activeComponent == textBox)
-            {
-                tryAddMonster();
-                previousActiveComponent();
-            }
-            // else if done button pressed
-        }
 
-        private void tryAddMonster()
-        {
-            if (!string.IsNullOrWhiteSpace(searchBox.Selected) &&
-                !string.IsNullOrWhiteSpace(textBox.Text) &&
-                int.TryParse(textBox.Text, out int quantity))
-            {
-                encounter.MonsterGroups.Add(new MonsterGroup(new Monster(searchBox.Selected), quantity));
-                searchBox.Clear();
-                textBox.Clear();
-            }
-        }
-
-        private void nextActiveComponent()
-        {
-            activeComponent.Unfocus();
-
-            if (activeComponentIndex == components.Count - 1)
-                activeComponentIndex = 0;
-            else
-                activeComponentIndex++;
-        }
-
-        private void previousActiveComponent()
-        {
-            activeComponent.Unfocus();
-
-            if (activeComponentIndex == 0)
-                activeComponentIndex = components.Count - 1;
-            else
-                activeComponentIndex--;
+            monsterGroup = null;
+            return false;
         }
 
         public override void Draw()
         {
             ConsoleColor textColor = activeComponent == textBox ? ConsoleColor.White : ConsoleColor.DarkGray;
 
-            activeComponent.Focus();
-
-            searchBox.Draw();
-            renderer.With(textColor).DrawText(new Point(3, 21), quantityLabel);
-            textBox.Draw();
-            listBox.Draw();
+            foreach (var component in components)
+                component.Draw();
+            
+            renderer.With(textColor).DrawText(new Point(3, 18), quantityLabel);
         }
 
         public override void Focus()
