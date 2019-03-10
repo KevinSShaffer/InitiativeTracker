@@ -8,11 +8,9 @@ namespace InitiativeTracker.Tests.Mocks
         private Point point = new Point(0, 0);
 
         public int CanvasWidth => throw new NotImplementedException();
-
         public int CanvasHeight => throw new NotImplementedException();
-
         public Point CursorPosition => point;
-        public bool CursorVisible { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool CursorVisible { get; set; }
 
         public void DrawLine(Point start, Point end)
         {

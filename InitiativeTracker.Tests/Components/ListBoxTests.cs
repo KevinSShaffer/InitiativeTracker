@@ -144,10 +144,10 @@ namespace InitiativeTracker.Tests.Components
         {
             var listBox = newListBox;
 
-            for (int i = 0; i <= listBox.Limit; i++)
+            for (int i = 0; i <= list.Count + 10; i++)
                 listBox.KeyPressed(functionKey(ConsoleKey.DownArrow));
 
-            Assert.AreEqual(list.ElementAt(listBox.Limit - 1), listBox.Selected);
+            Assert.AreEqual(list.Last(), listBox.Selected);
         }
 
         [TestMethod]
